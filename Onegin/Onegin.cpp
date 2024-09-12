@@ -87,3 +87,22 @@ bool symbol_in(const char *pass, char proof)
     return 0;
 }
 
+void print_string(const char *str)
+{
+    assert(str != NULL);
+
+    size_t pointer = 0;
+    while(str[pointer] != '\n' and str[pointer] != '\0' )
+    {
+        printf("%c", str[pointer++]);
+    }
+    printf("%c", str[pointer++]);
+}
+
+size_t my_strlen(const char *str)
+{
+    size_t pointer = 0;
+    while(str[pointer] != '\n' and str[pointer] != '\0' and str[pointer] != '\r')
+        pointer++;
+    return pointer;
+}

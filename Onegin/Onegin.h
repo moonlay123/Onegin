@@ -34,7 +34,18 @@ void create_onegin(text_t *onegin);
 void output_onegin(const char **onegin, const char *file_name, size_t onegin_size);
 
 /*!
+Печатает строку до \n
+*/
+void print_string(const char *str);
+
+/*!
+находит длину строки
+*/
+size_t my_strlen(const char *str);
+
+/*!
 Проверяет, что символ является частью строки
 */
 bool symbol_in(const char *pass, char proof);
+
 #endif
