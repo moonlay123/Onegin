@@ -65,7 +65,7 @@ void my_fputs(FILE *stream, const char *onegin)
     {
         fputc(onegin[pointer++], stream);
     }
-    if (onegin[pointer] != '\n')
+    if (onegin[pointer] != '\0')
         fputc(onegin[pointer], stream);
 }
 

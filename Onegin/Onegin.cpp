@@ -37,7 +37,8 @@ void create_onegin(text_t *onegin)
     {
         if (onegin->bufer[pointer_bufer] == '\n')
         {
-            onegin->text[pointer_file++] = &onegin->bufer[++pointer_bufer];
+            ++pointer_bufer;
+            onegin->text[pointer_file++] = &onegin->bufer[pointer_bufer];
         } else
         {
             ++pointer_bufer;
@@ -57,7 +58,7 @@ size_t getline(char **lineptr, char *bufer, FILE *stream)
         return 0;
     }
 
-    char file_c = '\0';
+    int file_c = '\0';
     *lineptr = bufer;
     size_t string_size = 1;
 
