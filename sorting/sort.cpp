@@ -38,6 +38,7 @@ size_t group_by_pivot(char **a, size_t left, size_t right)
     }
     return left;
 }
+
 void quick_sort(char **a, size_t left, size_t right)
 {
     int fl = 0;
@@ -59,36 +60,82 @@ void quick_sort(char **a, size_t left, size_t right)
     quick_sort(a, mid, right);
 }
 
-void quick_sort2(char **a, int first, int last)
+pair partition(void *a, int last, int size, int (*comp)(const void *a, const void *b))
+{
+    size_t extra_a = (size_t) a;
+    int left = 0, right = last, middle = (0 + last) / 2;
+    size_t mid = (extra_a + middle * size);
+    do
+    {
+        while (left != middle and comp((const void *)(extra_a + left * size), (const void *) mid) < 0) left++;
+        while (right != middle and comp((const void *)(extra_a + right * size), (const void *) mid) > 0) right--;
+
+        if (left <= right)
+        {
+            my_swap((char **)(extra_a + left * size), (char **)(extra_a + right * size));
+            left++;
+            right--;
+        }
+    } while (left <= right);
+    pair p = {left, right};
+    return p;
+}
+
+void quick_sort2(void *a, int last, size_t size, int (*comp)(const void *a, const void *b))
+{
+    if (0 < last)
+    {
+        pair p = partition(a, last, size, comp);
+        size_t extra_a = (size_t) a;
+        quick_sort2((void *)(extra_a), p.right, size, compare);
+        quick_sort2((void *)(extra_a + (p.left) * size), last - p.left, size, compare);
+    }
+}
+
+void quick_sort_1_8(char **a, int last, int (*comp)(const void *a, const void *b))
+{
+    if (0 < last)
+    {
+        int left = 0, right = last, middle = (0 + last) / 2;
+        char *mid = a[middle];
+        do
+        {
+            while (left != middle and comp(&a[left], &mid) < 0) left++;
+            while (right != middle and comp(&a[right], &mid) > 0) right--;
+            if (left <= right)
+            {
+                my_swap(&a[left], &a[right]);
+                left++;
+                right--;
+            }
+        } while (left <= right);
+        quick_sort_1_8(a, right, comp);
+        quick_sort_1_8(a + left, last - left, comp);
+    }
+}
+
+void quick_sort_1_5(char **a, int first, int last)
 {
     if (first < last)
     {
-        //int fl = 0;
         int left = first, right = last, middle = (first + last) / 2;
         char *mid = a[middle];
         do
         {
-            //printf("%d %d\n", left, right);
             while (left != middle and compare(&a[left], &mid) < 0) left++;
-            //printf("%d %d\n", left, right);
             while (right != middle and compare(&a[right], &mid) > 0) right--;
             if (left <= right)
             {
                 my_swap(&a[left], &a[right]);
                 left++;
                 right--;
-                //fl = 1;
             }
-            //printf("%d %d\n", left, right);
         } while (left <= right);
-        //if (fl == 1)
-        //{
-            quick_sort2(a, first, right);
-            quick_sort2(a, left, last);
-        //}
+
+        quick_sort_1_5(a, first, right);
+        quick_sort_1_5(a, left, last);
     }
 }
-
 
 int compare(const void *a, const void *b)
 {
@@ -109,7 +156,7 @@ int compare(const void *a, const void *b)
             return tolower(a1[pointer_a]) - tolower(b1[pointer_b]);
         }
 
-        if (a1[pointer_a] == '\n' && b1[pointer_b] == '\n' || a1[pointer_a] == '\0' && b1[pointer_b] == '\0')
+        if ((a1[pointer_a] == '\n' && b1[pointer_b] == '\n') || (a1[pointer_a] == '\0' && b1[pointer_b] == '\0'))
             return 0;
         else if (a1[pointer_a] =='\n' or a1[pointer_a] =='\0')
             return -1;
@@ -133,7 +180,7 @@ int compare_1(const void *a, const void *b)
     while (a1[pointer_a++] != '\n');
     while (b1[pointer_b++] != '\n');
 
-    while(pointer_a >= 0 and pointer_b >= 0)
+    while(pointer_a > 0 and pointer_b > 0)
     {
         while (symbol_in(pass_symbols, a1[pointer_a])) pointer_a--;
         while (symbol_in(pass_symbols, b1[pointer_b])) pointer_b--;
@@ -143,7 +190,7 @@ int compare_1(const void *a, const void *b)
             return tolower(a1[pointer_a]) - tolower(b1[pointer_b]);
         }
 
-        if (a1[pointer_a] == '\n' && b1[pointer_b] == '\n' || a1[pointer_a] == '\0' && b1[pointer_b] == '\0')
+        if ((a1[pointer_a] == '\n' && b1[pointer_b] == '\n') || (a1[pointer_a] == '\0' && b1[pointer_b] == '\0'))
             return 0;
         else if (a1[pointer_a] =='\n' or a1[pointer_a] =='\0')
             return -1;

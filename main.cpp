@@ -7,16 +7,11 @@ int main()
 {
     text_t onegin = {.file_name = "files/Onegin_input"};
     create_onegin(&onegin);
-    qsort(onegin.text, onegin.text_size, sizeof(char *), compare_1);
-    //bubble_sort(onegin.text, 0, onegin.text_size);
-    //quick_sort2(onegin.text, 0, onegin.text_size - 1);
-    //printf("excellent");
-    //output_onegin((const char **) onegin.text, "files/Onegin_output2", onegin.text_size);
-
-    char **pat =  riphm_creator(&onegin, "ed", 11);
-    for (int i = 0; i < 100; i ++)
-    {
-        print_string(pat[i]);
-    }
+    // qsort(onegin.text, onegin.text_size, sizeof(char *), compare_1);
+    // bubble_sort(onegin.text, 0, onegin.text_size);
+    quick_sort2(onegin.text, (int)onegin.text_size - 1, sizeof(char *), compare);
+    printf("excellent\n");
+    output_onegin((const char **)onegin.text, "files/Onegin_output2", onegin.text_size);
+    //output_onegin(norm_text, "files/Onegin_input2", onegin.text_size);
     printf("excellent");
 }

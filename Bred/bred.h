@@ -10,4 +10,9 @@ const int MAX_LEN = 100;
 */
 char **riphm_creator(text_t *onegin, const char *pattern, size_t from);
 
+/*!
+Создает массив массивов рифм
+*/
+char ***all_riphm_creator(text_t *onegin);
+
 #endif

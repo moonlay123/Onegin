@@ -3,10 +3,17 @@
 void output_onegin(const char **onegin, const char *file_name, size_t onegin_size)
 {
     FILE *fp = NULL;
-    file_open(&fp, file_name);
 
-    for (size_t i = 0; i < onegin_size; ++i)
-        my_fputs(fp, (const char *) onegin[i]);
+    int failure = file_open(&fp, file_name);
+
+    if (failure)
+    {
+        printf("kind of cringe\n");
+        return;
+    }
+
+    for (size_t i = 1; i < onegin_size; ++i)
+        fprintf(fp, "%s\n", (const char *) onegin[i]);
 
     file_close(&fp);
 }
@@ -17,26 +24,41 @@ void create_onegin(text_t *onegin)
 
     FILE *fp = NULL;
 
-    file_open(&fp, onegin->file_name);
+    int failure = file_open(&fp, onegin->file_name);
 
-    onegin->text_size = file_size(fp);
+    if (failure)
+    {
+        printf("kind of cringe\n");
+        return;
+    }
+
+    onegin->text_size = file_size_strings(fp);
     onegin->bufer_size = file_bytes(fp);
 
     onegin->text = (char **) calloc(onegin->text_size, sizeof(char *));
-    assert (onegin->text != NULL);
+    if (onegin->text == NULL)
+    {
+        printf("Calloc error in text ");
+        return;
+    }
 
     onegin->bufer = (char *) calloc(onegin->bufer_size, sizeof(char));
-    assert (onegin->bufer != NULL);
+    if (onegin->bufer == NULL)
+    {
+        printf("Calloc error in bufer");
+        return;
+    }
 
-    size_t red_size = read_file(fp, onegin->bufer);
+    size_t read_size = fread(onegin->bufer, sizeof(char), onegin->bufer_size, fp);
     size_t pointer_bufer = 0, pointer_file = 0;
 
     onegin->text[pointer_file++] = &onegin->bufer[pointer_bufer];
 
-    while (pointer_bufer < red_size)
+    while (pointer_bufer < read_size)
     {
         if (onegin->bufer[pointer_bufer] == '\n')
         {
+            onegin->bufer[pointer_bufer] = '\0';
             ++pointer_bufer;
             onegin->text[pointer_file++] = &onegin->bufer[pointer_bufer];
         } else
@@ -44,6 +66,8 @@ void create_onegin(text_t *onegin)
             ++pointer_bufer;
         }
     }
+
+    file_close(&fp);
     return;
 }
 
@@ -64,12 +88,12 @@ size_t getline(char **lineptr, char *bufer, FILE *stream)
 
     while ((file_c = fgetc(stream)) != '\n' and file_c !='\0')
     {
-        *bufer++ = file_c;
+        *bufer++ = (char) file_c;
         string_size++;
     }
     if (file_c == '\0')
         return 0;
-    *bufer++ = file_c;
+    *bufer++ = (char) file_c;
     return string_size;
 }
 

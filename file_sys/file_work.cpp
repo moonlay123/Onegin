@@ -1,9 +1,10 @@
 #include "file_work.h"
 
 
-size_t file_size(FILE *fp)
+size_t file_size_strings(FILE *fp)
 {
-    assert(fp != NULL);
+    if (fp == NULL)
+        return -1;
 
     size_t lines_counter = 0;
 
@@ -21,7 +22,8 @@ size_t file_size(FILE *fp)
 
 size_t file_bytes(FILE *fp)
 {
-    assert(fp != NULL);
+    if (fp == NULL)
+        return -1;
 
     size_t byte_counter = 0;
 
@@ -33,26 +35,28 @@ size_t file_bytes(FILE *fp)
     return byte_counter;
 }
 
-void file_open(FILE **fp, const char *file_name)
+int file_open(FILE **fp, const char *file_name)
 {
-    assert(fp != NULL);
-
-    assert(fp != NULL);
+    if (fp == NULL or file_name == NULL)
+        return 1;
 
     if ((*fp = fopen(file_name, "rb+")) == NULL)
     {
         perror("File open error");
     }
 
+    return 0;
 }
 
-void file_close(FILE **fp)
+int file_close(FILE **fp)
 {
-    assert(fp != NULL);
-
+    if (fp == NULL)
+        return 1;
     if (fclose(*fp) != 0)
         perror("File close error");
     *fp = NULL;
+
+    return 0;
 }
 
 void my_fputs(FILE *stream, const char *onegin)
@@ -61,7 +65,7 @@ void my_fputs(FILE *stream, const char *onegin)
     assert(onegin != NULL);
 
     size_t pointer = 0;
-    while (onegin[pointer] != '\n' and onegin[pointer] != '\0' and onegin[pointer] != EOF)
+    while (onegin[pointer] != '\n' and onegin[pointer] != '\0')
     {
         fputc(onegin[pointer++], stream);
     }

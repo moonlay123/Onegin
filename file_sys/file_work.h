@@ -12,17 +12,17 @@ const int BUFER_SIZE = 1000;
 /*!
 Возвращает длину файла
 */
-size_t file_size(FILE *fp);
+size_t file_size_strings(FILE *fp);
 
 /*!
 Открывает файл
 */
-void file_open(FILE **fp, const char *file_name);
+int file_open(FILE **fp, const char *file_name);
 
 /*!
 Закрывает файл
 */
-void file_close(FILE **fp);
+int file_close(FILE **fp);
 
 /*!
 Находит число байтов в файле
